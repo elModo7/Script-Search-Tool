@@ -16,3 +16,7 @@ There are two variants, one with the GUI purely made in AutoHotkey (*above*) and
 > You can do that through the tray menu once opened.
 
 ![Preview](https://github.com/elModo7/Script-Search-Tool/blob/main/res/img/about.png?raw=true)
+
+> [!WARNING] 
+> This code is really really old, it is in Spanglish and full of copy-pastes from when I was starting to learn AutoHotkey, use it for the functionality alone, but the code base is terrific for learning or extending from it.
+> If you improve it, feel free do make a pull request!
