@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	  <link href="bootstrap.min.css" rel="stylesheet">
+	  <script src="jquery.min.js"></script>
+	  <script src="bootstrap.min.js"></script>
+		<script>
+			// Show the modal (non-dismissible)
+			function showLoading(text) {
+			  if (text) $('#loadingModal .loading-text').text(text);
+			  $('#loadingModal').modal({
+				backdrop: 'static',
+				keyboard: false,
+				show: true
+			  });
+			}
+
+			// Update the text while it's visible
+			function setLoadingText(text) {
+			  $('#loadingModal .loading-text').text(text);
+			}
+
+			// Hide the modal
+			function hideLoading() {
+			  $('#loadingModal').modal('hide');
+			}
+
+			/* Example usage:
+			showLoading('Fetching data…');
+			setTimeout(function(){
+			  setLoadingText('Almost done…');
+			}, 1500);
+			setTimeout(hideLoading, 3000);
+			*/
+		</script>
+	<style>
+	html,
+	body {
+	  width: 100%;
+	  height: 100%;
+	}
+
+	.title-btn {
+	  padding: 0.35em 1.0em;
+	  cursor: pointer;
+	  vertical-align: bottom;
+	  font-family: Webdings;
+	  font-size: 11pt;
+	}
+
+	.title-btn:hover {
+	  background: rgba(0, 0, 0, .2);
+	}
+
+	.title-btn-close:hover {
+	  background: #dc3545;
+	}
+	
+	/* Spinner */
+	.loading-spinner {
+	  width: 44px;
+	  height: 44px;
+	  border: 4px solid #eee;
+	  border-top-color: #337ab7; /* Bootstrap 3 primary */
+	  border-radius: 50%;
+	  animation: bs3-spin 0.8s linear infinite;
+	  margin: 4px auto 10px;
+	}
+
+	@keyframes bs3-spin {
+	  to { transform: rotate(360deg); }
+	}
+
+	/* Optional: larger text & spacing */
+	#loadingModal .modal-body {
+	  padding: 24px 16px;
+	}
+	#loadingModal .loading-text {
+	  margin: 0;
+	  font-weight: 600;
+	}
+	</style>
+	<script>
+		$(document).ready(function(){
+			$( "#inputBusqueda" ).focus();
+			(function ($, window) {
+				$.fn.contextMenu = function (settings) {
+					return this.each(function () {
+						// Open context menu
+						$(this).on("contextmenu", function (e) {
+							// return native menu if pressing control
+							if (e.ctrlKey) return;
+
+							//open menu
+							var $menu = $(settings.menuSelector)
+								.data("invokedOn", $(e.target))
+								.show()
+								.css({
+									position: "absolute",
+									left: getMenuPosition(e.clientX, 'width', 'scrollLeft'),
+									top: getMenuPosition(e.clientY, 'height', 'scrollTop')
+								})
+								.off('click')
+								.on('click', 'a', function (e) {
+									$menu.hide();
+
+									var $invokedOn = $menu.data("invokedOn");
+									var $selectedMenu = $(e.target);
+
+									settings.menuSelected.call(this, $invokedOn, $selectedMenu);
+								});
+
+							return false;
+						});
+
+						//make sure menu closes on any click
+						$('body').click(function () {
+							$(settings.menuSelector).hide();
+						});
+					});
+
+					function getMenuPosition(mouse, direction, scrollDir) {
+						var win = $(window)[direction](),
+							scroll = $(window)[scrollDir](),
+							menu = $(settings.menuSelector)[direction](),
+							position = mouse + scroll;
+
+						// opening menu would pass the side of the page
+						if (mouse + menu > win && menu < mouse)
+							position -= menu;
+
+						return position;
+					}
+
+				};
+			})(jQuery, window);
+			updateDOM()
+			$('body').on('DOMSubtreeModified', '#myTable', function(){
+				updateDOM();
+			});
+		});
+		
+		function updateDOM()
+		{
+			$("#myTable td").contextMenu({
+				menuSelector: "#contextMenu",
+				menuSelected: function (invokedOn, selectedMenu) {
+					var msg = "You selected the menu item '" + selectedMenu.text() +
+						"' on the value '" + invokedOn.text() + "'";
+					//alert(msg);
+					ahk.ejecutarAccion(selectedMenu.text(), invokedOn.parent().find(":last-child").text())
+				}
+			});
+		}
+	</script>
+	</head>
+	<body class="d-flex flex-column">
+	  <!-- Title Bar -->
+	  <header>
+		<div class="d-flex align-items-stretch bg-dark text-white" oncontextmenu="return false;">
+		  <span id="windowTitle" class="flex-grow-1 px-2 py-1" onmousedown="neutron.DragTitleBar()">File Indexer elModo7 / VictorDevLog 2025</span>
+		  <span class="title-btn" onclick="neutron.Minimize()">0</span>
+		  <span class="title-btn" onclick="neutron.Maximize()">1</span>
+		  <span class="title-btn title-btn-close" onclick="neutron.Close()">r</span>
+		</div>
+	  </header>
+	  <!-- End Title Bar -->
+	  <!-- Window Contents -->
+	  <!-- <div class="flex-grow-1 d-flex" oncontextmenu="javascript:alert('No context menu yet!');return false;"> -->
+	  <div class="flex-grow-1 d-flex" oncontextmenu="return false;">
+		<!-- Page Content -->
+		<div class="flex-grow-1 overflow-auto">
+		  <div class="tab-content container p-2" id="v-pills-tabContent">
+
+			<div class="form-group col-md-12">
+				<input type="text" class="form-control" id="inputBusqueda" onclick="updateDOM()" placeholder="Script Name or Folder Name" required>
+			</div>
+			<div style="height: 100px !important;">
+				<table id="myTable" class="table table-striped table-hoover">
+				  <thead class="thead-dark" style="overflow: scroll;">
+					<tr>
+					  <th scope="col" style="width: 10%">#</th>
+					  <th scope="col" style="width: 40%">Name</th>
+					  <th scope="col" style="width: 50%">Path</th>
+					</tr>
+				  </thead>
+				  <tbody id="tableBody"></tbody>
+				</table>
+				<ul id="contextMenu" class="dropdown-menu" role="menu" style="display:none" >
+					<li><a class="dropdown-item" tabindex="-1" href="#">Run</a></li>
+					<li><a class="dropdown-item" tabindex="-1" href="#">Edit</a></li>
+					<li><a class="dropdown-item" tabindex="-1" href="#">Open path</a></li>
+					<!--<li class="divider"></li>
+					<li><a tabindex="-1" href="#">Separated link</a></li>-->
+				</ul>
+			<div>
+		  </div>
+		</div>
+		<!-- End Page Contents -->
+	  </div>
+	  <!-- End Window Contents -->
+	  <!-- Loading Modal -->
+		<div class="modal fade" id="loadingModal" tabindex="-1" role="dialog" aria-modal="true" aria-hidden="true">
+		  <div class="modal-dialog" role="document">
+			<div class="modal-content">
+			  <div class="modal-body text-center">
+				<div class="loading-spinner" role="status" aria-live="polite" aria-label="Loading"></div>
+				<p class="loading-text" id="loadingText">Loading…</p>
+			  </div>
+			</div>
+		  </div>
+		</div>
+
+	</body>
+</html>
