@@ -7,7 +7,7 @@ This tool aims at addressing just that, you can search by file name or folder (t
 
 It creates an SQLite database of a specific folder (recursive) and indexes the file contents so that future searchs are pretty much instant.
 
-There are two variants, one with the GUI purely made in AutoHotkey (*above*) and another one with a more visually appealing UI but no file preview (*below*).
+There are two variants, one with the GUI purely made in AutoHotkey (*below*) and another one with a more visually appealing UI but no file preview (*above*).
 
 ![Preview](https://github.com/elModo7/Script-Search-Tool/blob/main/res/img/sample1.gif?raw=true)
 
