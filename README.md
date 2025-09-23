@@ -11,6 +11,82 @@ There are two variants, one with the GUI purely made in AutoHotkey (*below*) and
 
 ![Preview](https://github.com/elModo7/Script-Search-Tool/blob/main/res/img/sample1.gif?raw=true)
 
+## Installation
+
+1. Extract the ZIP archive to a folder of your choice.
+
+---
+
+## Configuration (Before First Run)
+
+Edit the `config.ini` file to fit your setup.
+
+### `indexPath`
+
+- Path to the folder you want to index. Subfolders are also indexed.  
+- **Do not use quotation marks**.  
+- **Always keep a trailing backslash (`\`)** when indexing a folder.  
+
+Examples:
+
+```
+indexPath="C:\ahk\Script Search-Tool 1.0\"   ❌ NOT WORKING
+indexPath=C:\ahk\Script Search-Tool 1.0\     ✅ WORKING
+indexPath=C:\ahk\Script Search-Tool 1.0      ❌ NOT WORKING
+indexPath=C:\ahk\Script Search-Tool 1.0\AHKIndex.ahk  ✅ WORKING (for this file only)
+```
+
+### `fileExtensions`
+
+- Comma-separated list of file extensions to include.  
+- Wildcards (`*`) are **not supported**.
+
+Examples:
+
+```
+fileExtensions=ahk,exe,7z,zip,rar,pdf,txt,html,mhtml,dll
+fileExtensions=*   ❌ NOT WORKING
+```
+
+### `defaultEditor`
+
+- Path to your preferred editor (no quotation marks).
+
+### `contentIndexed`
+
+- Controls whether **content search** is available.
+  - `1` → Shows the "Content Search" checkbox (searches inside file contents when checked).
+  - `0` → Hides the "Content Search" checkbox.
+
+---
+
+## First Run
+
+Run the script with the `-recreate` parameter to generate the `.db` file for your configured `indexPath`.
+
+Example:
+
+```
+AHKIndex.ahk -recreate
+```
+
+---
+
+## Usage
+
+While the script is running:
+
+- **Right-click** the AHK tray icon to open the menu:
+  - **Reindex** → Rebuild the index.
+  - **Clear config** → Reset configuration.
+
+---
+
+## Notes
+
+- Ensure your `config.ini` is properly set before running.
+- Indexing large directories may take some time.
+
 > [!NOTE] 
 > I have included my script index so as for you to have a small demo, but you will have to clear the config if you want to use the script on your own file system.
 > You can do that through the tray menu once opened.
